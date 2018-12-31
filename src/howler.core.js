@@ -556,11 +556,11 @@
       self._pool = o.pool || 5;
       self._preload = (typeof o.preload === 'boolean') ? o.preload : true;
       self._rate = o.rate || 1;
+      self._delay = o.delay || 0;
       self._sprite = o.sprite || {};
       self._src = (typeof o.src !== 'string') ? o.src : [o.src];
       self._volume = o.volume !== undefined ? o.volume : 1;
       self._xhrWithCredentials = o.xhrWithCredentials || false;
-      self._delay = o.delay || 0;
 
       // Setup all other default properties.
       self._duration = 0;
@@ -832,9 +832,9 @@
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(self._delay, seek, 86400) : node.bufferSource.noteGrainOn(self._delay, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(sound._delay, seek, 86400) : node.bufferSource.noteGrainOn(sound._delay, seek, duration);
           } else {
-            sound._loop ? node.bufferSource.start(self._delay, seek, 86400) : node.bufferSource.start(self._delay, seek, duration);
+            sound._loop ? node.bufferSource.start(sound._delay, seek, 86400) : node.bufferSource.start(sound._delay, seek, duration);
           }
 
           // Start a new timer if none is present.
@@ -2149,6 +2149,7 @@
       self._loop = parent._loop;
       self._volume = parent._volume;
       self._rate = parent._rate;
+      self._delay = parent._delay;
       self._seek = 0;
       self._paused = true;
       self._ended = true;
@@ -2218,6 +2219,7 @@
       self._loop = parent._loop;
       self._volume = parent._volume;
       self._rate = parent._rate;
+      self._delay = parent._delay;
       self._seek = 0;
       self._rateSeek = 0;
       self._paused = true;
