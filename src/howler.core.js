@@ -828,13 +828,13 @@
           // Setup the playback params.
           var vol = (sound._muted || self._muted) ? 0 : sound._volume;
           node.gain.setValueAtTime(vol, Howler.ctx.currentTime);
-          sound._playStart = Howler.ctx.currentTime;
+          sound._playStart = Howler.ctx.currentTime + sound._delay;
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(sound._delay, seek, 86400) : node.bufferSource.noteGrainOn(sound._delay, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(sound._playStart, seek, 86400) : node.bufferSource.noteGrainOn(sound._playStart, seek, duration);
           } else {
-            sound._loop ? node.bufferSource.start(sound._delay, seek, 86400) : node.bufferSource.start(sound._delay, seek, duration);
+            sound._loop ? node.bufferSource.start(sound._playStart, seek, 86400) : node.bufferSource.start(sound._playStart, seek, duration);
           }
 
           // Start a new timer if none is present.
