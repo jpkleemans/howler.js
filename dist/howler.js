@@ -560,6 +560,7 @@
       self._src = (typeof o.src !== 'string') ? o.src : [o.src];
       self._volume = o.volume !== undefined ? o.volume : 1;
       self._xhrWithCredentials = o.xhrWithCredentials || false;
+      self._delay = o.delay || 0;
 
       // Setup all other default properties.
       self._duration = 0;
@@ -831,9 +832,9 @@
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(0, seek, 86400) : node.bufferSource.noteGrainOn(0, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(self._delay, seek, 86400) : node.bufferSource.noteGrainOn(self._delay, seek, duration);
           } else {
-            sound._loop ? node.bufferSource.start(0, seek, 86400) : node.bufferSource.start(0, seek, duration);
+            sound._loop ? node.bufferSource.start(self._delay, seek, 86400) : node.bufferSource.start(self._delay, seek, duration);
           }
 
           // Start a new timer if none is present.
