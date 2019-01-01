@@ -701,9 +701,10 @@
      * Play a sound or resume previous playback.
      * @param  {String/Number} sprite   Sprite name for sprite playback or sound id to continue previous.
      * @param  {Boolean} internal Internal Use: true prevents event firing.
+     * @param  {Number} when The time, in seconds, at which the sound should begin to play.
      * @return {Number}          Sound ID.
      */
-    play: function(sprite, internal) {
+    play: function(sprite, internal, when) {
       var self = this;
       var id = null;
 
@@ -827,13 +828,13 @@
           // Setup the playback params.
           var vol = (sound._muted || self._muted) ? 0 : sound._volume;
           node.gain.setValueAtTime(vol, Howler.ctx.currentTime);
-          sound._playStart = Howler.ctx.currentTime;
+          sound._playStart = when || Howler.ctx.currentTime;
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(0, seek, 86400) : node.bufferSource.noteGrainOn(0, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(sound._playStart, seek, 86400) : node.bufferSource.noteGrainOn(sound._playStart, seek, duration);
           } else {
-            sound._loop ? node.bufferSource.start(0, seek, 86400) : node.bufferSource.start(0, seek, duration);
+            sound._loop ? node.bufferSource.start(sound._playStart, seek, 86400) : node.bufferSource.start(sound._playStart, seek, duration);
           }
 
           // Start a new timer if none is present.
