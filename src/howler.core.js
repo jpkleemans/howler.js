@@ -825,10 +825,12 @@
           setParams();
           self._refreshBuffer(sound);
 
+          var currentTime = Howler.ctx.currentTime;
+
           // Setup the playback params.
           var vol = (sound._muted || self._muted) ? 0 : sound._volume;
-          node.gain.setValueAtTime(vol, Howler.ctx.currentTime);
-          sound._playStart = when || Howler.ctx.currentTime;
+          node.gain.setValueAtTime(vol, currentTime);
+          sound._playStart = when || currentTime;
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
@@ -839,6 +841,10 @@
 
           // Start a new timer if none is present.
           if (timeout !== Infinity) {
+            if (when) {
+              timeout += (when - currentTime)
+            }
+            timeout += 500 // Uitlooptijd
             self._endTimers[sound._id] = setTimeout(self._ended.bind(self, sound), timeout);
           }
 
