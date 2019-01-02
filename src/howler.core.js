@@ -834,9 +834,9 @@
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(sound._playStart, seek, 86400) : node.bufferSource.noteGrainOn(sound._playStart, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(sound._playStart, seek, 86400) : node.bufferSource.noteGrainOn(sound._playStart, seek);
           } else {
-            sound._loop ? node.bufferSource.start(sound._playStart, seek, 86400) : node.bufferSource.start(sound._playStart, seek, duration);
+            sound._loop ? node.bufferSource.start(sound._playStart, seek, 86400) : node.bufferSource.start(sound._playStart, seek);
           }
 
           // Start a new timer if none is present.
