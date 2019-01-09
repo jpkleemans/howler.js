@@ -701,9 +701,10 @@
      * Play a sound or resume previous playback.
      * @param  {String/Number} sprite   Sprite name for sprite playback or sound id to continue previous.
      * @param  {Boolean} internal Internal Use: true prevents event firing.
+     * @param  {Float} delay Time, in seconds, to wait before the sound should begin to play.
      * @return {Number}          Sound ID.
      */
-    play: function(sprite, internal) {
+    play: function(sprite, internal, delay) {
       var self = this;
       var id = null;
 
@@ -735,6 +736,11 @@
             id = null;
           }
         }
+      }
+
+      delay = parseFloat(delay)
+      if (isNaN(delay)) {
+        delay = 0.00
       }
 
       // Get the selected node, or get one from the pool.
@@ -827,18 +833,18 @@
           // Setup the playback params.
           var vol = (sound._muted || self._muted) ? 0 : sound._volume;
           node.gain.setValueAtTime(vol, Howler.ctx.currentTime);
-          sound._playStart = Howler.ctx.currentTime;
+          sound._playStart = Howler.ctx.currentTime + delay;
 
           // Play the sound using the supported method.
           if (typeof node.bufferSource.start === 'undefined') {
-            sound._loop ? node.bufferSource.noteGrainOn(0, seek, 86400) : node.bufferSource.noteGrainOn(0, seek, duration);
+            sound._loop ? node.bufferSource.noteGrainOn(sound._playStart, seek, 86400) : node.bufferSource.noteGrainOn(sound._playStart, seek, duration);
           } else {
-            sound._loop ? node.bufferSource.start(0, seek, 86400) : node.bufferSource.start(0, seek, duration);
+            sound._loop ? node.bufferSource.start(sound._playStart, seek, 86400) : node.bufferSource.start(sound._playStart, seek, duration);
           }
 
           // Start a new timer if none is present.
           if (timeout !== Infinity) {
-            self._endTimers[sound._id] = setTimeout(self._ended.bind(self, sound), timeout);
+            self._endTimers[sound._id] = setTimeout(self._ended.bind(self, sound), timeout + delay);
           }
 
           if (!internal) {
@@ -937,13 +943,13 @@
         // Play immediately if ready, or wait for the 'canplaythrough'e vent.
         var loadedNoReadyState = (window && window.ejecta) || (!node.readyState && Howler._navigator.isCocoonJS);
         if (node.readyState >= 3 || loadedNoReadyState) {
-          playHtml5();
+          setTimeout(playHtml5, delay * 1000);
         } else {
           self._playLock = true;
 
           var listener = function() {
             // Begin playback.
-            playHtml5();
+            setTimeout(playHtml5, delay * 1000);
 
             // Clear this listener.
             node.removeEventListener(Howler._canPlayEvent, listener, false);
