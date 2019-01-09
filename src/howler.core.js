@@ -796,7 +796,7 @@
       // Determine how long to play for and where to start playing.
       var seek = Math.max(0, sound._seek > 0 ? sound._seek : self._sprite[sprite][0] / 1000);
       var duration = Math.max(0, ((self._sprite[sprite][0] + self._sprite[sprite][1]) / 1000) - seek);
-      var timeout = (duration * 1000) / Math.abs(sound._rate);
+      var timeout = ((duration * 1000) / Math.abs(sound._rate)) + (delay * 1000);
       var start = self._sprite[sprite][0] / 1000;
       var stop = (self._sprite[sprite][0] + self._sprite[sprite][1]) / 1000;
       var loop = !!(sound._loop || self._sprite[sprite][2]);
@@ -844,7 +844,7 @@
 
           // Start a new timer if none is present.
           if (timeout !== Infinity) {
-            self._endTimers[sound._id] = setTimeout(self._ended.bind(self, sound), timeout + delay);
+            self._endTimers[sound._id] = setTimeout(self._ended.bind(self, sound), timeout);
           }
 
           if (!internal) {
