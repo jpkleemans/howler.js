@@ -739,7 +739,7 @@
       }
 
       delay = parseFloat(delay)
-      if (isNaN(delay)) {
+      if (isNaN(delay) || delay < 0.00) {
         delay = 0.00
       }
 
